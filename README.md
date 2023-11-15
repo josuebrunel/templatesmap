@@ -1,3 +1,11 @@
+[![test](https://github.com/josuebrunel/templatesmap/workflows/test/badge.svg)](https://github.com/josuebrunel/templatesmap/actions?query=workflow%3Atest)
+[![coverage](https://coveralls.io/repos/github/josuebrunel/templatesmap/badge.svg?branch=main)](https://coveralls.io/github/josuebrunel/templatesmap?branch=main)
+[![goreportcard](https://goreportcard.com/badge/github.com/josuebrunel/templatesmap)](https://goreportcard.com/report/github.com/josuebrunel/templatesmap)
+[![gopkg](https://pkg.go.dev/badge/github.com/josuebrunel/templatesmap.svg)](https://pkg.go.dev/github.com/josuebrunel/templatesmap)
+[![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/josuebrunel/templatesmap/blob/master/LICENSE)
+
+
+
 # TemplatesMap
 
 ## Overview
