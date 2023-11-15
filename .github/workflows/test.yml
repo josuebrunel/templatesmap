@@ -27,14 +27,3 @@ jobs:
           with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               path-to-lcov: coverage.lcov
-
-    doc:
-        name: Refresh documentation
-        runs-on: ubuntu-latest
-        steps:
-        - name: Pull new module version
-          run: go install github.com/josuebrunel/templatesmap@latest
-          env:
-            GOPROXY: https://proxy.golang.org
-            GO111MODULE: on
-
