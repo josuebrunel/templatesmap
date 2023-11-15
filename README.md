@@ -1,2 +1,32 @@
-# templatemap
-A simple library helping you with your Go templates composition
+# TemplatesMap
+
+## Overview
+The `templatesmap` package is a Go library for managing HTML templates. It provides a convenient way to load, store, and render HTML templates with dynamic data. It's particularly useful for web applications needing to serve various HTML pages or layouts.
+
+## Installation
+To install the `templatesmap` package, you can simply import it in your Go project:
+
+```go
+
+import "github.com/josuebrunel/templatesmap"
+
+```
+
+## Usage
+
+It works with *patterns* just like `template.ParseGlob`.
+
+```go
+
+layoutPath := "templates/layouts/*.html"
+userPath := "templates/user/*.html"
+rolePath := "templates/role/*.html"
+tplMap, err := templatesmap.NewTemplatesMap(layoutPath, userPath, rolePath)
+if err != nil {
+    log.Fatal(err)
+}
+
+tpl.Render(os.Stdout, "user-detail.html", user)
+```
+
+Read the *templatesmap_test.go* for more.
