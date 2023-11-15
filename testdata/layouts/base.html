@@ -1,0 +1,9 @@
+<html>
+    <head>
+        {{ template "styles.html" }}
+    </head>
+    <body>
+        {{ block "content" . }} base block {{ end }}
+        {{ template "scripts.html" }}
+    </body>
+</html>
