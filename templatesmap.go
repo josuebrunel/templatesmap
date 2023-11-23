@@ -27,6 +27,21 @@ func (t TemplatesMap) Render(wr io.Writer, name string, data any) error {
 	return tpl.ExecuteTemplate(wr, name, data)
 }
 
+func (t *TemplatesMap) Add(filesPath ...string) error {
+	for _, path := range filesPath {
+		pages, err := filepath.Glob(path) // Retrieve page file paths.
+		if err != nil {
+			return err
+		}
+
+		for _, page := range pages {
+			files := append(t.Layouts, page)
+			t.Templates[filepath.Base(page)] = template.Must(template.ParseFiles(files...))
+		}
+	}
+	return nil
+}
+
 // NewTemplatesMap initializes a new TemplatesMap with the given layout and page paths.
 // It returns a pointer to a TemplatesMap and an error if any occurs during initialization.
 func NewTemplatesMap(layoutPath string, pagesPath ...string) (*TemplatesMap, error) {
@@ -40,16 +55,9 @@ func NewTemplatesMap(layoutPath string, pagesPath ...string) (*TemplatesMap, err
 		templates[filepath.Base(l)] = template.Must(template.ParseFiles(layouts...))
 	}
 
-	for _, path := range pagesPath {
-		pages, err := filepath.Glob(path) // Retrieve page file paths.
-		if err != nil {
-			return nil, err
-		}
-
-		for _, page := range pages {
-			files := append(layouts, page)
-			templates[filepath.Base(page)] = template.Must(template.ParseFiles(files...))
-		}
+	var tm = &TemplatesMap{Layouts: layouts, Templates: templates}
+	if err := tm.Add(pagesPath...); err != nil {
+		return nil, err
 	}
-	return &TemplatesMap{Layouts: layouts, Templates: templates}, nil
+	return tm, nil
 }
