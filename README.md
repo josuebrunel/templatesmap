@@ -29,7 +29,10 @@ It works with *patterns* just like `template.ParseGlob`.
 layoutPath := "templates/layouts/*.html"
 userPath := "templates/user/*.html"
 rolePath := "templates/role/*.html"
-tplMap, err := templatesmap.NewTemplatesMap(layoutPath, userPath, rolePath)
+funcs := template.FuncsMap{
+    "upper": strings.ToUpper,
+}
+tplMap, err := templatesmap.NewTemplatesMap(layoutPath, funcs, userPath, rolePath)
 if err != nil {
     log.Fatal(err)
 }
