@@ -15,6 +15,7 @@ var ErrTemplateNotFound = errors.New("template not found")
 type TemplatesMap struct {
 	Layouts   []string                      // Layouts is a list of layout template file paths.
 	Templates map[string]*template.Template // Templates is a map from template names to their parsed representations.
+	Funcs     template.FuncMap              // Funcs is a map of functions to be used in templates.
 }
 
 // Render attempts to write a rendered template to the provided writer.
@@ -27,6 +28,8 @@ func (t TemplatesMap) Render(wr io.Writer, name string, data any) error {
 	return tpl.ExecuteTemplate(wr, name, data)
 }
 
+// Add parses new templates from the provided file paths and adds them to the TemplatesMap.
+// It returns an error if any file path is invalid or if parsing fails.
 func (t *TemplatesMap) Add(filesPath ...string) error {
 	for _, path := range filesPath {
 		pages, err := filepath.Glob(path) // Retrieve page file paths.
@@ -36,7 +39,7 @@ func (t *TemplatesMap) Add(filesPath ...string) error {
 
 		for _, page := range pages {
 			files := append(t.Layouts, page)
-			t.Templates[filepath.Base(page)] = template.Must(template.ParseFiles(files...))
+			t.Templates[filepath.Base(page)] = template.Must(template.New("").Funcs(t.Funcs).ParseFiles(files...))
 		}
 	}
 	return nil
@@ -44,7 +47,8 @@ func (t *TemplatesMap) Add(filesPath ...string) error {
 
 // NewTemplatesMap initializes a new TemplatesMap with the given layout and page paths.
 // It returns a pointer to a TemplatesMap and an error if any occurs during initialization.
-func NewTemplatesMap(layoutPath string, pagesPath ...string) (*TemplatesMap, error) {
+// The provided functions (funcs) are also included in the TemplatesMap for use in templates.
+func NewTemplatesMap(layoutPath string, funcs template.FuncMap, pagesPath ...string) (*TemplatesMap, error) {
 	layouts, err := filepath.Glob(layoutPath) // Retrieve layout file paths.
 	if err != nil {
 		return nil, err
@@ -52,10 +56,10 @@ func NewTemplatesMap(layoutPath string, pagesPath ...string) (*TemplatesMap, err
 
 	templates := make(map[string]*template.Template)
 	for _, l := range layouts {
-		templates[filepath.Base(l)] = template.Must(template.ParseFiles(layouts...))
+		templates[filepath.Base(l)] = template.Must(template.New("").Funcs(funcs).ParseFiles(layouts...))
 	}
 
-	var tm = &TemplatesMap{Layouts: layouts, Templates: templates}
+	var tm = &TemplatesMap{Layouts: layouts, Funcs: funcs, Templates: templates}
 	if err := tm.Add(pagesPath...); err != nil {
 		return nil, err
 	}

@@ -26,14 +26,18 @@ func TestTemplatesMap(t *testing.T) {
 		usersPath   = "./testdata/users/*.html"
 	)
 
-	_, err := NewTemplatesMap(layoutsPath, "notfound")
+	funcs := template.FuncMap{
+		"upper": strings.ToUpper,
+	}
+
+	_, err := NewTemplatesMap(layoutsPath, funcs, "notfound")
 	assert(t, err, nil)
 
-	tpl, err := NewTemplatesMap("layouts", "notfound")
+	tpl, err := NewTemplatesMap("layouts", funcs, "notfound")
 	assert(t, err, nil)
 
 	t.Run("Template", func(t *testing.T) {
-		tpl, err = NewTemplatesMap(layoutsPath, rolesPath)
+		tpl, err = NewTemplatesMap(layoutsPath, funcs, rolesPath)
 		assert(t, err, nil)
 		assert(t, len(tpl.Layouts), 3)
 		log.Printf("templates: %v", tpl.Templates)
@@ -49,7 +53,7 @@ func TestTemplatesMap(t *testing.T) {
 		assert(t, len(tpl.Templates), 5)
 	})
 	t.Run("Render", func(t *testing.T) {
-		tpl, err = NewTemplatesMap(layoutsPath, rolesPath, usersPath)
+		tpl, err = NewTemplatesMap(layoutsPath, funcs, rolesPath, usersPath)
 		assert(t, err, nil)
 		buf := bytes.NewBufferString("")
 		err = tpl.Render(buf, "notfound", nil)
@@ -64,7 +68,7 @@ func TestTemplatesMap(t *testing.T) {
 		tpl.Render(buf, "role-list.html", roles)
 		log.Print(buf.String())
 		for _, r := range roles {
-			assert(t, strings.Contains(buf.String(), r.Name), true)
+			assert(t, strings.Contains(buf.String(), strings.ToUpper(r.Name)), true)
 		}
 		buf.Reset()
 		u := User{Email: "user@example.com"}

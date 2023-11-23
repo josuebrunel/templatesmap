@@ -2,7 +2,7 @@
 {{ define "content" }}
 {{ range . }}
 <ul>
-    <li>{{ .Name }}</li>
+    <li>{{ .Name | upper }}</li>
 </ul>
 {{ end }}
 {{ end }}
